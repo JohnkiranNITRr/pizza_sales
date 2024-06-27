@@ -1,7 +1,68 @@
 SELECT * FROM Pizza.pizza_sales;
 SELECT ORDER_DATE FROM PIZZA.PIZZA_SALES
 LIMIT 0, 100000000;
-hghjgjj
+
+
+SELECT SUM(TOTAL_PRICE) AS Revenue FROM Pizza.pizza_sales ;
+SELECT count(distinct(order_id)) as Total_orders_sales FROM Pizza.pizza_sales ;
+SELECT sum(total_price) / count(distinct(order_id)) As Avg_Order_Value from Pizza.pizza_sales;
+
+select sum(quantity) AS Total_pizza_sold FROM Pizza.pizza_sales ;
+
+
+SELECT sum(quantity) / count(distinct(order_id)) AS AVG_PIZZA_PER_ORDER FROM Pizza.pizza_sales;
+ 
+-- day Wise trend
+# Day WISE TREND
+
+SELECT DAYNAME(str_To_Date(ORDER_DATE, '%d-%m-%y')) AS Order_day,
+	   count(distinct(order_id)) as Total_Orders
+From Pizza.Pizza_sales
+Group By Order_day
+Order By Order_day;
 
 
 
+
+-- MONTHLY TREND
+
+SELECT MONTHNAME(STR_TO_DATE(ORDER_DATE, '%d-%m-%y')) AS ORDER_MONTH,
+	   COUNT(DISTINCT(ORDER_ID)) AS TOTAL_ORDERS
+FROM PIZZA.PIZZA_SALES
+GROUP BY ORDER_MONTH
+ORDER BY ORDER_MONTH
+LIMIT 10000000000;
+
+
+-- Percentage of Sales by Pizza category
+
+SELECT 
+	PIZZA_CATEGORY,
+	CAST(SUM(TOTAL_PRICE) AS DECIMAL(10, 2)) AS TOTAL_REVENUE,
+	CAST(SUM(TOTAL_PRICE)/(SELECT SUM(TOTAL_PRICE) FROM PIZZA.PIZZA_SALES) AS DECIMAL(10,2)) *100 AS PERCENTAGE_OF_SALES
+    
+FROM PIZZA.PIZZA_SALES
+GROUP BY PIZZA_CATEGORY
+ORDER BY TOTAL_REVENUE DESC;
+
+
+-- Percentage of Sales by Pizza SIZE
+
+
+SELECT 
+	PIZZA_SIZE,
+	CAST(SUM(TOTAL_PRICE) AS DECIMAL(10, 3)) AS TOTAL_REVENUE,
+    CAST(SUM(TOTAL_PRICE)/(SELECT SUM(TOTAL_PRICE) FROM PIZZA.PIZZA_SALES) AS DECIMAL(10,3)) *100 AS PERCENTAGE_OF_SALES
+FROM PIZZA.PIZZA_SALES
+GROUP BY PIZZA_SIZE
+ORDER BY TOTAL_REVENUE DESC;
+    
+
+
+-- TOP 5 PIZZA_NAME BY REVENUE
+
+
+SELECT PIZZA_NAME, CAST(SUM(TOTAL_PRICE)AS DECIMAL(10, 2)) AS TOTAL_REVENUE FROM PIZZA.PIZZA_SALES
+GROUP BY PIZZA_NAME
+ORDER BY TOTAL_REVENUE DESC
+LIMIT 5 ;
